@@ -13,6 +13,7 @@ namespace Spellbound_Invoice_Converter
     public partial class Form1 : Form
     {
         string csvFile;
+        public static double dueDateDays = 14;
 
         public Form1()
         {
