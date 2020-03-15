@@ -14,6 +14,7 @@ namespace Spellbound_Invoice_Converter
     {
         string csvFile;
         public static double dueDateDays = 14;
+        static csvConvert csvConverter;
 
         public Form1()
         {
@@ -22,6 +23,7 @@ namespace Spellbound_Invoice_Converter
 
         private void buttonSelect_Click(object sender, EventArgs e)
         {
+            csvConverter = new csvConvert();
             OpenFileDialog file = new OpenFileDialog();
             file.Filter = "CSV Files (*.csv)|*.csv";
             if (file.ShowDialog() == DialogResult.OK)
@@ -33,7 +35,7 @@ namespace Spellbound_Invoice_Converter
 
         private void buttonConvert_Click(object sender, EventArgs e)
         {
-            csvConvert.ConvertCSV(csvFile); 
+            csvConverter.ConvertCSV(csvFile); 
         }
     }
 }
