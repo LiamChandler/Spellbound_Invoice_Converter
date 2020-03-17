@@ -13,31 +13,37 @@ namespace Spellbound_Invoice_Converter
 {
     class csvConvert
     {
-        static protected List<string> erroredLines;
-        public void ConvertCSV(String file)
+        public List<string> erroredLines;
+        public void ConvertCSV(string dataFile, string customerData)
         {
+            // Parse CSV's to tables
             erroredLines = new List<string>();
-            DataTable t = ConvertCSVtoDataTable(file);
+            DataTable dataTable = ConvertDataToTable(dataFile);
+            DataTable customerTable = ConvertCustomerDataToTable(customerData);
+
+
+
+            // Parse data from table
             bool added;
             Client currentClient;
             List<Agent> agents = new List<Agent>();
 
-            foreach (DataRow row in t.Rows)
+            foreach (DataRow row in dataTable.Rows)
             {
                 added = false;
                 currentClient = new Client();
 
                 // Parse Data
-                String[] tmp = ((string)row[t.Columns.IndexOf("Date - ISO")]).Substring(0, 10).Split('-');
+                String[] tmp = ((string)row[dataTable.Columns.IndexOf("Date - ISO")]).Substring(0, 10).Split('-');
                 currentClient.date = new DateTime((int)Int32.Parse(tmp[0]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[2]));
 
-                currentClient.orderNumber = (string)row[t.Columns.IndexOf("Order number")];
-                currentClient.agent = (string)row[t.Columns.IndexOf("Agent code")];
-                currentClient.name = (string)row[t.Columns.IndexOf("Customer name")];
-                currentClient.paidToAgent = float.Parse((string)row[t.Columns.IndexOf("Paid to agent")]);
-                currentClient.commission = float.Parse((string)row[t.Columns.IndexOf("Commission")]);
+                currentClient.orderNumber = (string)row[dataTable.Columns.IndexOf("Order number")];
+                currentClient.agent = (string)row[dataTable.Columns.IndexOf("Agent code")];
+                currentClient.name = (string)row[dataTable.Columns.IndexOf("Customer name")];
+                currentClient.paidToAgent = float.Parse((string)row[dataTable.Columns.IndexOf("Paid to agent")]);
+                currentClient.commission = float.Parse((string)row[dataTable.Columns.IndexOf("Commission")]);
                 currentClient.amountOwned = currentClient.paidToAgent - currentClient.commission;
-                currentClient.agentRefernce = (string)row[t.Columns.IndexOf("Agent reference")];
+                currentClient.agentRefernce = (string)row[dataTable.Columns.IndexOf("Agent reference")];
 
                 if (agents.Count != 0)
                 {
@@ -54,14 +60,29 @@ namespace Spellbound_Invoice_Converter
                 if (!added)
                 {
                     Agent newAgent = new Agent(currentClient.agent);
+                    DataRow agentData = customerTable.Rows.Find( newAgent.Name);
+                    if(agentData != null)
+                    {
+                        newAgent.EmailAddress = (string)agentData[customerTable.Columns.IndexOf("EmailAddress")];
+                        newAgent.POAddressLine1 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine1")];
+                        newAgent.POAddressLine2 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine2")];
+                        newAgent.POAddressLine3 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine3")];
+                        newAgent.POAddressLine4 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine4")];
+                        newAgent.POCity = (string)agentData[customerTable.Columns.IndexOf("POCity")];
+                        newAgent.PORegion = (string)agentData[customerTable.Columns.IndexOf("PORegion")];
+                        newAgent.POPostalCode = (string)agentData[customerTable.Columns.IndexOf("POPostalCode")];
+                        newAgent.POCountry = (string)agentData[customerTable.Columns.IndexOf("POCountry")];
+                        newAgent.Discount = float.Parse((string)agentData[customerTable.Columns.IndexOf("Discount")]);
+                    }
+
                     newAgent.clients.Add(currentClient);
                     agents.Add(newAgent);
                 }
             }
-            printAgents(agents, file);
+            printAgents(agents, dataFile);
         }
 
-        protected DataTable ConvertCSVtoDataTable(string strFilePath)
+        protected DataTable ConvertDataToTable(string strFilePath)
         {
             DataTable dt = new DataTable();
             using (StreamReader sr = new StreamReader(strFilePath))
@@ -98,7 +119,7 @@ namespace Spellbound_Invoice_Converter
                             dt.Rows.Add(dr);
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
                         erroredLines.Add(line);
                     }
@@ -111,6 +132,40 @@ namespace Spellbound_Invoice_Converter
             if (erroredLines.Count > 1)
                 printErrored(strFilePath);
 
+            return dt;
+        }
+        
+        protected DataTable ConvertCustomerDataToTable(string strFilePath)
+        {
+            DataTable dt = new DataTable();
+            using (StreamReader sr = new StreamReader(strFilePath))
+            {
+                // Add header line to table
+                string[] headers = Regex.Split(sr.ReadLine(), ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+
+                foreach (string h in headers)
+                {
+                    dt.Columns.Add(h);
+                }
+
+                // Add information from CSV to table
+                while (!sr.EndOfStream)
+                {
+                    string line = sr.ReadLine();
+                    string[] rows = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+
+                    DataRow dr = dt.NewRow();
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        dr[i] = rows[i];
+                    }
+                    dt.Rows.Add(dr);
+                }
+            }
+
+            DataColumn[] keyColumns = new DataColumn[1];
+            keyColumns[0] = dt.Columns[0];
+            dt.PrimaryKey = keyColumns;
             return dt;
         }
 
@@ -176,7 +231,7 @@ namespace Spellbound_Invoice_Converter
     {
         public List<Client> clients = new List<Client>();
 
-        public String Name;
+        public String Name;                                                     // Needed
         public String EmailAddress = "";
         public String POAddressLine1 = "";
         public String POAddressLine2 = "";
@@ -186,17 +241,17 @@ namespace Spellbound_Invoice_Converter
         public String PORegion = "";
         public String POPostalCode = "";
         public String POCountry = "";
-        public String InvoiceNumber = "";
+        public String InvoiceNumber = "";                                       // Needed
         public String Reference = "";
-        public DateTime InvoiceDate = DateTime.Today;
-        public DateTime DueDate = DateTime.Today.AddDays(Form1.dueDateDays);
-        public String InventoryItemCode = "Tour";                               // Might need to be non-hardcoded
-        // Description
-        // Quantity
-        // UnitAmount
-        // Discount
-        // AccountCode - Links to InventoryItemCode
-        public String TaxType = "15% GST on Income";
+        public DateTime InvoiceDate = DateTime.Today;                           // Needed
+        public DateTime DueDate = DateTime.Today.AddDays(SpellboundInvoiceConverter.dueDateDays);    // Needed
+        public String InventoryItemCode = "Tour";                                   // Might need to be non-hardcoded
+        // Description                                                          // Needed
+        // Quantity                                                             // Needed
+        // UnitAmount                                                           // Needed
+        public float Discount = 0;
+        // AccountCode - Links to InventoryItemCode                             // Needed
+        public String TaxType = "15% GST on Income";                            // Needed
         public String TrackingName1 = "";
         public String TrackingOption1 = "";
         public String TrackingName2 = "";
@@ -232,10 +287,10 @@ namespace Spellbound_Invoice_Converter
                 sw.Write(DueDate.ToShortDateString() + ',');
                 sw.Write(InventoryItemCode + ',');
                 sw.Write(c.agentRefernce + " " + c.date.ToString("MMM d") + " " + c.name + ',');
-                sw.Write("1" + ',');    // Quantity
-                sw.Write("" + ',');       // UnitAmount
-                sw.Write("" + ',');       // Discount
-                sw.Write("" + ',');       // AccountCode
+                sw.Write("1" + ',');                // Quantity
+                sw.Write(c.amountOwned + ',');
+                sw.Write(Discount + ',');
+                sw.Write("" + ',');                 // AccountCode
                 sw.Write(TaxType + ',');
                 sw.Write(TrackingName1 + ',');
                 sw.Write(TrackingOption1 + ',');
@@ -244,7 +299,6 @@ namespace Spellbound_Invoice_Converter
                 sw.Write(Currency + ',');
                 sw.WriteLine(BrandingTheme);
             }
-
         }
     }
 

@@ -10,13 +10,14 @@ using System.Windows.Forms;
 
 namespace Spellbound_Invoice_Converter
 {
-    public partial class Form1 : Form
+    public partial class SpellboundInvoiceConverter : Form
     {
         string csvFile;
-        public static double dueDateDays = 14;
+        string customerData;
+        public static double dueDateDays = 21;
         static csvConvert csvConverter;
 
-        public Form1()
+        public SpellboundInvoiceConverter()
         {
             InitializeComponent();
         }
@@ -33,9 +34,24 @@ namespace Spellbound_Invoice_Converter
             }
         }
 
+        private void buttonCustomerData_Click(object sender, EventArgs e)
+        {
+            csvConverter = new csvConvert();
+            OpenFileDialog file = new OpenFileDialog();
+            file.Filter = "CSV Files (*.csv)|*.csv";
+            if (file.ShowDialog() == DialogResult.OK)
+            {
+                customerData = file.FileName;
+                labelCustomerData.Text = customerData;
+            }
+        }
+
         private void buttonConvert_Click(object sender, EventArgs e)
         {
-            csvConverter.ConvertCSV(csvFile); 
+            if (csvFile != null && customerData != null)
+                csvConverter.ConvertCSV(csvFile, customerData);
+            else
+                MessageBox.Show("Please select both a csv to convert and a datasheet to pull customer data from");
         }
     }
 }
