@@ -21,8 +21,6 @@ namespace Spellbound_Invoice_Converter
             DataTable dataTable = ConvertDataToTable(dataFile);
             DataTable customerTable = ConvertCustomerDataToTable(customerData);
 
-
-
             // Parse data from table
             bool added;
             Client currentClient;
@@ -241,17 +239,17 @@ namespace Spellbound_Invoice_Converter
         public String PORegion = "";
         public String POPostalCode = "";
         public String POCountry = "";
-        public String InvoiceNumber = "";                                       // Needed
+        public String InvoiceNumber = SpellboundInvoiceConverter.getInvoiceNumber().ToString();      // Needed
         public String Reference = "";
         public DateTime InvoiceDate = DateTime.Today;                           // Needed
         public DateTime DueDate = DateTime.Today.AddDays(SpellboundInvoiceConverter.dueDateDays);    // Needed
-        public String InventoryItemCode = "Tour";                                   // Might need to be non-hardcoded
+        public String InventoryItemCode = (string)SpellboundInvoiceConverter.config.Rows.Find("InventoryItemCode")[1];
         // Description                                                          // Needed
         // Quantity                                                             // Needed
         // UnitAmount                                                           // Needed
         public float Discount = 0;
-        // AccountCode - Links to InventoryItemCode                             // Needed
-        public String TaxType = "15% GST on Income";                            // Needed
+        public String AccountCode = (string)SpellboundInvoiceConverter.config.Rows.Find("AccountCode")[1];    // Needed
+        public String TaxType = (string)SpellboundInvoiceConverter.config.Rows.Find("TaxType")[1];        // Needed
         public String TrackingName1 = "";
         public String TrackingOption1 = "";
         public String TrackingName2 = "";
@@ -269,6 +267,7 @@ namespace Spellbound_Invoice_Converter
             // Print Header
             sw.WriteLine("ContactName,EmailAddress,POAddressLine1,POAddressLine2,POAddressLine3,POAddressLine4,POCity,PORegion,POPostalCode,POCountry,InvoiceNumber,Reference,InvoiceDate,DueDate,InventoryItemCode,Description,Quantity,UnitAmount,Discount,AccountCode,TaxType,TrackingName1,TrackingOption1,TrackingName2,TrackingOption2,Currency,BrandingTheme");
 
+            // Print each 
             foreach(Client c in clients)
             {
                 sw.Write(Name + ',');
@@ -287,10 +286,10 @@ namespace Spellbound_Invoice_Converter
                 sw.Write(DueDate.ToShortDateString() + ',');
                 sw.Write(InventoryItemCode + ',');
                 sw.Write(c.agentRefernce + " " + c.date.ToString("MMM d") + " " + c.name + ',');
-                sw.Write("1" + ',');                // Quantity
-                sw.Write(c.amountOwned + ',');
-                sw.Write(Discount + ',');
-                sw.Write("" + ',');                 // AccountCode
+                sw.Write("1" + ',');    // Quantity
+                sw.Write(c.amountOwned.ToString() + ',');
+                sw.Write(Discount.ToString() + ',');
+                sw.Write(AccountCode + ',');
                 sw.Write(TaxType + ',');
                 sw.Write(TrackingName1 + ',');
                 sw.Write(TrackingOption1 + ',');
