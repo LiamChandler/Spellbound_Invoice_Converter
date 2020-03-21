@@ -57,7 +57,7 @@ namespace Spellbound_Invoice_Converter
             if (file.ShowDialog() == DialogResult.OK)
             {
                 csvFile = file.FileName;
-                labelSelectedCSV.Text = csvFile;
+                labelSelectedCSV.Text = csvFile
             }
         }
 
@@ -69,7 +69,8 @@ namespace Spellbound_Invoice_Converter
             if (file.ShowDialog() == DialogResult.OK)
             {
                 customerData = file.FileName;
-                labelCustomerData.Text = customerData;
+                labelCustomerData.Text = customerData
+                config.Rows.Find("LastCustomerDataLocation")[1] = customerData;
             }
         }
 
@@ -84,6 +85,7 @@ namespace Spellbound_Invoice_Converter
         public static int getInvoiceNumber()
         {
             invoiceNumber++;
+            config.Rows.Find("CurrentInvoiceNumber")[1] = invoiceNumber.toString();
             return invoiceNumber;
         }
 
@@ -143,7 +145,7 @@ namespace Spellbound_Invoice_Converter
             StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\config.csv");
 
             sw.WriteLine("Setting,Value");
-                object[] cols;
+            object[] cols;
             foreach(DataRow row in config.Rows)
             {
                 cols = row.ItemArray;
