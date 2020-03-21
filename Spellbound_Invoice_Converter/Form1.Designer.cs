@@ -33,7 +33,7 @@
             this.labelSelectedCSV = new System.Windows.Forms.Label();
             this.buttonConvert = new System.Windows.Forms.Button();
             this.labelCustomerData = new System.Windows.Forms.Label();
-            this.buttonCustomerData = new System.Windows.Forms.Button();
+            this.buttonBusinessData = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonSelect
@@ -73,15 +73,15 @@
             this.labelCustomerData.Size = new System.Drawing.Size(0, 13);
             this.labelCustomerData.TabIndex = 4;
             // 
-            // buttonCustomerData
+            // buttonBusinessData
             // 
-            this.buttonCustomerData.Location = new System.Drawing.Point(12, 41);
-            this.buttonCustomerData.Name = "buttonCustomerData";
-            this.buttonCustomerData.Size = new System.Drawing.Size(120, 23);
-            this.buttonCustomerData.TabIndex = 3;
-            this.buttonCustomerData.Text = "CustomerData";
-            this.buttonCustomerData.UseVisualStyleBackColor = true;
-            this.buttonCustomerData.Click += new System.EventHandler(this.buttonCustomerData_Click);
+            this.buttonBusinessData.Location = new System.Drawing.Point(12, 41);
+            this.buttonBusinessData.Name = "buttonBusinessData";
+            this.buttonBusinessData.Size = new System.Drawing.Size(120, 23);
+            this.buttonBusinessData.TabIndex = 3;
+            this.buttonBusinessData.Text = "Business Data";
+            this.buttonBusinessData.UseVisualStyleBackColor = true;
+            this.buttonBusinessData.Click += new System.EventHandler(this.buttonBusinessData_Click);
             // 
             // SpellboundInvoiceConverter
             // 
@@ -89,7 +89,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(708, 105);
             this.Controls.Add(this.labelCustomerData);
-            this.Controls.Add(this.buttonCustomerData);
+            this.Controls.Add(this.buttonBusinessData);
             this.Controls.Add(this.buttonConvert);
             this.Controls.Add(this.labelSelectedCSV);
             this.Controls.Add(this.buttonSelect);
@@ -107,7 +107,7 @@
         private System.Windows.Forms.Label labelSelectedCSV;
         private System.Windows.Forms.Button buttonConvert;
         private System.Windows.Forms.Label labelCustomerData;
-        private System.Windows.Forms.Button buttonCustomerData;
+        private System.Windows.Forms.Button buttonBusinessData;
     }
 }
 

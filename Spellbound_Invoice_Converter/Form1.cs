@@ -15,13 +15,13 @@ namespace Spellbound_Invoice_Converter
 {
     public partial class SpellboundInvoiceConverter : Form
     {
-        string csvFile;
-        string customerData;
-        public static double dueDateDays = 21;
-        static csvConvert csvConverter;
-        private static System.Timers.Timer saveTimer;
+        string dataFileLocation;
+        static string businessDataLocation;
 
-        public static int invoiceNumber;
+        public static double dueDateDays;
+        static csvConvert csvConverter;
+
+        private static int invoiceNumber;
 
         public static DataTable config = new DataTable();
 
@@ -29,67 +29,73 @@ namespace Spellbound_Invoice_Converter
         {
             InitializeComponent();
 
-            config = importConfig();
+            config = importConfig(true);
 
-            invoiceNumber = Int32.Parse((string)config.Rows.Find("CurrentInvoiceNumber")[1]);
-            dueDateDays = Int32.Parse((string)config.Rows.Find("InvoiceDueDatePeriod")[1]);
-            customerData = (string)config.Rows.Find("LastCustomerDataLocation")[1];
-            labelCustomerData.Text = customerData;
-
-            saveTimer = new System.Timers.Timer();
-            saveTimer.Interval = 60000;
-
-            // Hook up the Elapsed event for the timer. 
-            saveTimer.Elapsed += OnTimedEvent;
-
-            // Have the timer fire repeated events (true is the default)
-            saveTimer.AutoReset = true;
-
-            // Start the timer
-            saveTimer.Enabled = true;
+            if (config != null)
+            {
+                invoiceNumber = Int32.Parse((string)config.Rows.Find("CurrentInvoiceNumber")[1]);
+                dueDateDays = Int32.Parse((string)config.Rows.Find("InvoiceDueDatePeriod")[1]);
+                businessDataLocation = (string)config.Rows.Find("LastBusinessDataLocation")[1];
+                labelCustomerData.Text = businessDataLocation;
+            }
         }
 
         private void buttonSelect_Click(object sender, EventArgs e)
         {
-            csvConverter = new csvConvert();
-            OpenFileDialog file = new OpenFileDialog();
-            file.Filter = "CSV Files (*.csv)|*.csv";
-            if (file.ShowDialog() == DialogResult.OK)
+            if (config == null)
+                MessageBox.Show("Please make sure that there is 'config.csv' file in the directory");
+            else
             {
-                csvFile = file.FileName;
-                labelSelectedCSV.Text = csvFile
+                OpenFileDialog file = new OpenFileDialog();
+                file.Filter = "CSV Files (*.csv)|*.csv";
+                if (file.ShowDialog() == DialogResult.OK)
+                {
+                    dataFileLocation = file.FileName;
+                    labelSelectedCSV.Text = dataFileLocation;
+                }
             }
         }
 
-        private void buttonCustomerData_Click(object sender, EventArgs e)
+        private void buttonBusinessData_Click(object sender, EventArgs e)
         {
-            csvConverter = new csvConvert();
-            OpenFileDialog file = new OpenFileDialog();
-            file.Filter = "CSV Files (*.csv)|*.csv";
-            if (file.ShowDialog() == DialogResult.OK)
+            if (config == null)
+                MessageBox.Show("Please make sure that there is 'config.csv' file in the directory");
+            else
             {
-                customerData = file.FileName;
-                labelCustomerData.Text = customerData
-                config.Rows.Find("LastCustomerDataLocation")[1] = customerData;
+                OpenFileDialog file = new OpenFileDialog();
+                file.Filter = "CSV Files (*.csv)|*.csv";
+                if (file.ShowDialog() == DialogResult.OK)
+                {
+                    businessDataLocation = file.FileName;
+                    labelCustomerData.Text = businessDataLocation;
+                    config.Rows.Find("LastBusinessDataLocation")[1] = businessDataLocation;
+                }
             }
         }
 
         private void buttonConvert_Click(object sender, EventArgs e)
         {
-            if (csvFile != null && customerData != null)
-                csvConverter.ConvertCSV(csvFile, customerData);
+            if (config == null)
+                MessageBox.Show("Please make sure that there is 'config.csv' file in the directory");
             else
-                MessageBox.Show("Please select both a csv to convert and a datasheet to pull customer data from");
+            {
+                if (dataFileLocation != null && businessDataLocation != null)
+                {
+                    csvConverter = new csvConvert();
+                    csvConverter.ConvertCSV(dataFileLocation, businessDataLocation);
+                    exportConfig();
+                }
+                else
+                    MessageBox.Show("Please select both a csv to convert and a datasheet to pull customer data from");
+            }
         }
-
         public static int getInvoiceNumber()
         {
             invoiceNumber++;
-            config.Rows.Find("CurrentInvoiceNumber")[1] = invoiceNumber.toString();
             return invoiceNumber;
         }
 
-        private DataTable importConfig()
+        private DataTable importConfig(bool showMessage)
         {
             try
             {
@@ -128,36 +134,52 @@ namespace Spellbound_Invoice_Converter
 
                 return dt;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                MessageBox.Show("Please make sure that there is a 'config.csv' file in the program directory");
-                Debug.WriteLine(e.Message);
+                if (showMessage)
+                {
+                    StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\configExample.csv");
+
+                    sw.WriteLine("Setting,Value,Discription");
+                    sw.WriteLine("CurrentInvoiceNumber,1,Get from Xero to align with previous invoices");
+                    sw.WriteLine("InvoiceDueDatePeriod,14,Amount of time for the invoice to be returned");
+                    sw.WriteLine("LastBusinessDataLocation,,Last used businessData location");
+                    sw.WriteLine("InventoryItemCode,,normally 'Tour'");
+                    sw.WriteLine("AccountCode,,Normally '271'");
+                    sw.WriteLine("TaxType,,Normally '15% GST on Income'");
+                    sw.Flush();
+                    sw.Close();
+
+                    MessageBox.Show("You need to create a 'config.csv' file in the directory.\n An example file has been created.");
+                }
+                Debug.WriteLine(e.StackTrace);
                 return null;
             }
         }
-        private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-        {
-            exportConfig();
-        }
 
-        private static void exportConfig()
+        private void exportConfig()
         {
+            config.Rows.Find("LastBusinessDataLocation")[1] = businessDataLocation;
+            config.Rows.Find("CurrentInvoiceNumber")[1] = invoiceNumber.ToString();
+
             StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\config.csv");
 
-            sw.WriteLine("Setting,Value");
+            sw.WriteLine("Setting,Value,Discription");
             object[] cols;
-            foreach(DataRow row in config.Rows)
+            foreach (DataRow row in config.Rows)
             {
                 cols = row.ItemArray;
-                sw.WriteLine(cols[0] + "," + cols[1]);
+                for (int i = 0; i < cols.Length; i++)
+                {
+                    if (i != 0)
+                        sw.Write(",");
+                    sw.Write(cols[i]);
+                }
+                sw.WriteLine("");
             }
             sw.Flush();
             sw.Close();
             Debug.WriteLine("Config Saved");
-        }
-        static void OnApplicationExit(object sender, EventArgs e)
-        {
-            exportConfig();
         }
     }
 }

@@ -18,8 +18,8 @@ namespace Spellbound_Invoice_Converter
         {
             // Parse CSV's to tables
             erroredLines = new List<string>();
-            DataTable dataTable = ConvertDataToTable(dataFile);
-            DataTable customerTable = ConvertCustomerDataToTable(customerData);
+            DataTable dataTable = ParseClientDataToTable(dataFile);
+            DataTable companyInfoTable = ParseCompanyDataToTable(customerData);
 
             // Parse data from table
             bool added;
@@ -58,29 +58,31 @@ namespace Spellbound_Invoice_Converter
                 if (!added)
                 {
                     Agent newAgent = new Agent(currentClient.agent);
-                    DataRow agentData = customerTable.Rows.Find( newAgent.Name);
+                    DataRow agentData = companyInfoTable.Rows.Find( newAgent.Name);
                     if(agentData != null)
                     {
-                        newAgent.EmailAddress = (string)agentData[customerTable.Columns.IndexOf("EmailAddress")];
-                        newAgent.POAddressLine1 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine1")];
-                        newAgent.POAddressLine2 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine2")];
-                        newAgent.POAddressLine3 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine3")];
-                        newAgent.POAddressLine4 = (string)agentData[customerTable.Columns.IndexOf("POAddressLine4")];
-                        newAgent.POCity = (string)agentData[customerTable.Columns.IndexOf("POCity")];
-                        newAgent.PORegion = (string)agentData[customerTable.Columns.IndexOf("PORegion")];
-                        newAgent.POPostalCode = (string)agentData[customerTable.Columns.IndexOf("POPostalCode")];
-                        newAgent.POCountry = (string)agentData[customerTable.Columns.IndexOf("POCountry")];
-                        newAgent.Discount = float.Parse((string)agentData[customerTable.Columns.IndexOf("Discount")]);
+                        newAgent.EmailAddress = (string)agentData[companyInfoTable.Columns.IndexOf("EmailAddress")];
+                        newAgent.POAddressLine1 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine1")];
+                        newAgent.POAddressLine2 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine2")];
+                        newAgent.POAddressLine3 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine3")];
+                        newAgent.POAddressLine4 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine4")];
+                        newAgent.POCity = (string)agentData[companyInfoTable.Columns.IndexOf("POCity")];
+                        newAgent.PORegion = (string)agentData[companyInfoTable.Columns.IndexOf("PORegion")];
+                        newAgent.POPostalCode = (string)agentData[companyInfoTable.Columns.IndexOf("POPostalCode")];
+                        newAgent.POCountry = (string)agentData[companyInfoTable.Columns.IndexOf("POCountry")];
+                        newAgent.Discount = float.Parse((string)agentData[companyInfoTable.Columns.IndexOf("Discount")]);
                     }
 
                     newAgent.clients.Add(currentClient);
                     agents.Add(newAgent);
                 }
             }
+
+            Debug.WriteLine("Saving data to files");
             printAgents(agents, dataFile);
         }
 
-        protected DataTable ConvertDataToTable(string strFilePath)
+        protected DataTable ParseClientDataToTable(string strFilePath)
         {
             DataTable dt = new DataTable();
             using (StreamReader sr = new StreamReader(strFilePath))
@@ -133,7 +135,7 @@ namespace Spellbound_Invoice_Converter
             return dt;
         }
         
-        protected DataTable ConvertCustomerDataToTable(string strFilePath)
+        protected DataTable ParseCompanyDataToTable(string strFilePath)
         {
             DataTable dt = new DataTable();
             using (StreamReader sr = new StreamReader(strFilePath))
@@ -201,7 +203,7 @@ namespace Spellbound_Invoice_Converter
                     Directory.CreateDirectory(editedPath);
 
                 StreamWriter sw = new StreamWriter(@editedPath + a.Name.Replace("\"", "") + ".csv");
-                a.printClients(sw);
+                a.saveClients(sw);
                 sw.Flush();
                 sw.Close();
             }
@@ -262,7 +264,7 @@ namespace Spellbound_Invoice_Converter
             this.Name = Name;
         }
 
-        public void printClients(StreamWriter sw)
+        public void saveClients(StreamWriter sw)
         {
             // Print Header
             sw.WriteLine("ContactName,EmailAddress,POAddressLine1,POAddressLine2,POAddressLine3,POAddressLine4,POCity,PORegion,POPostalCode,POCountry,InvoiceNumber,Reference,InvoiceDate,DueDate,InventoryItemCode,Description,Quantity,UnitAmount,Discount,AccountCode,TaxType,TrackingName1,TrackingOption1,TrackingName2,TrackingOption2,Currency,BrandingTheme");
@@ -297,7 +299,9 @@ namespace Spellbound_Invoice_Converter
                 sw.Write(TrackingOption2 + ',');
                 sw.Write(Currency + ',');
                 sw.WriteLine(BrandingTheme);
+
             }
+            Debug.WriteLine("Saved " + Name + " to file");
         }
     }
 
