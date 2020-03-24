@@ -31,12 +31,12 @@ namespace Spellbound_Invoice_Converter
 
             config = importConfig(true);
 
+            businessDataLocation = Directory.GetCurrentDirectory() + "\\BusinessData.csv";
+
             if (config != null)
             {
                 invoiceNumber = Int32.Parse((string)config.Rows.Find("CurrentInvoiceNumber")[1]);
                 dueDateDays = Int32.Parse((string)config.Rows.Find("InvoiceDueDatePeriod")[1]);
-                businessDataLocation = (string)config.Rows.Find("LastBusinessDataLocation")[1];
-                labelCustomerData.Text = businessDataLocation;
             }
         }
 
@@ -53,42 +53,18 @@ namespace Spellbound_Invoice_Converter
                     dataFileLocation = file.FileName;
                     labelSelectedCSV.Text = dataFileLocation;
                 }
-            }
-        }
 
-        private void buttonBusinessData_Click(object sender, EventArgs e)
-        {
-            if (config == null)
-                MessageBox.Show("Please make sure that there is 'config.csv' file in the directory");
-            else
-            {
-                OpenFileDialog file = new OpenFileDialog();
-                file.Filter = "CSV Files (*.csv)|*.csv";
-                if (file.ShowDialog() == DialogResult.OK)
-                {
-                    businessDataLocation = file.FileName;
-                    labelCustomerData.Text = businessDataLocation;
-                    config.Rows.Find("LastBusinessDataLocation")[1] = businessDataLocation;
-                }
-            }
-        }
-
-        private void buttonConvert_Click(object sender, EventArgs e)
-        {
-            if (config == null)
-                MessageBox.Show("Please make sure that there is 'config.csv' file in the directory");
-            else
-            {
-                if (dataFileLocation != null && businessDataLocation != null)
+                if (dataFileLocation != null)
                 {
                     csvConverter = new csvConvert();
                     csvConverter.ConvertCSV(dataFileLocation, businessDataLocation);
                     exportConfig();
                 }
                 else
-                    MessageBox.Show("Please select both a csv to convert and a datasheet to pull customer data from");
+                    MessageBox.Show("Please select a .csv file to convert.");
             }
         }
+
         public static int getInvoiceNumber()
         {
             invoiceNumber++;
@@ -143,7 +119,6 @@ namespace Spellbound_Invoice_Converter
                     sw.WriteLine("Setting,Value,Discription");
                     sw.WriteLine("CurrentInvoiceNumber,1,Get from Xero to align with previous invoices");
                     sw.WriteLine("InvoiceDueDatePeriod,14,Amount of time for the invoice to be returned");
-                    sw.WriteLine("LastBusinessDataLocation,,Last used businessData location");
                     sw.WriteLine("InventoryItemCode,,normally 'Tour'");
                     sw.WriteLine("AccountCode,,Normally '271'");
                     sw.WriteLine("TaxType,,Normally '15% GST on Income'");
@@ -159,7 +134,6 @@ namespace Spellbound_Invoice_Converter
 
         private void exportConfig()
         {
-            config.Rows.Find("LastBusinessDataLocation")[1] = businessDataLocation;
             config.Rows.Find("CurrentInvoiceNumber")[1] = invoiceNumber.ToString();
 
             StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\config.csv");

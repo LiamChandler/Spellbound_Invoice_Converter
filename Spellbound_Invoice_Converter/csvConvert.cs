@@ -7,7 +7,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Data;
 using System.Text.RegularExpressions;
-
+using System.Windows.Forms;
 
 namespace Spellbound_Invoice_Converter
 {
@@ -58,8 +58,8 @@ namespace Spellbound_Invoice_Converter
                 if (!added)
                 {
                     Agent newAgent = new Agent(currentClient.agent);
-                    DataRow agentData = companyInfoTable.Rows.Find( newAgent.Name);
-                    if(agentData != null)
+                    DataRow agentData = companyInfoTable.Rows.Find(newAgent.Name);
+                    if (agentData != null)
                     {
                         newAgent.EmailAddress = (string)agentData[companyInfoTable.Columns.IndexOf("EmailAddress")];
                         newAgent.POAddressLine1 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine1")];
@@ -80,6 +80,18 @@ namespace Spellbound_Invoice_Converter
 
             Debug.WriteLine("Saving data to files");
             printAgents(agents, dataFile);
+            DialogResult dr = MessageBox.Show("Sucessfully converted " + dataTable.Rows.Count + " clients into " + agents.Count + " businesses.\nWould you like to be taken to the output location?", "Output", MessageBoxButtons.YesNo);
+
+            Debug.WriteLine(dataFile.Substring(0, dataFile.LastIndexOf(".")) + "Output\\");
+            if (dr == DialogResult.Yes)
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = (dataFile.Substring(0, dataFile.LastIndexOf(".")) + "Output\\"),
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+            }
         }
 
         protected DataTable ParseClientDataToTable(string strFilePath)
@@ -134,7 +146,7 @@ namespace Spellbound_Invoice_Converter
 
             return dt;
         }
-        
+
         protected DataTable ParseCompanyDataToTable(string strFilePath)
         {
             DataTable dt = new DataTable();
@@ -214,7 +226,7 @@ namespace Spellbound_Invoice_Converter
             string editedPath = path.Substring(0, path.LastIndexOf(".")) + "Output\\";
 
             // Create path if doesn't exist
-            if(!Directory.Exists(editedPath))
+            if (!Directory.Exists(editedPath))
                 Directory.CreateDirectory(editedPath);
 
             StreamWriter sw = new StreamWriter(@editedPath + "ErroredOutput.csv");
@@ -244,7 +256,7 @@ namespace Spellbound_Invoice_Converter
         public String InvoiceNumber = SpellboundInvoiceConverter.getInvoiceNumber().ToString();      // Needed
         public String Reference = "";
         public DateTime InvoiceDate = DateTime.Today;                           // Needed
-        public DateTime DueDate = DateTime.Today.AddDays(SpellboundInvoiceConverter.dueDateDays);    // Needed
+        public DateTime DueDate = new DateTime(DateTime.Today.Year, (DateTime.Today.Month + 1), 1).AddDays(-1);
         public String InventoryItemCode = (string)SpellboundInvoiceConverter.config.Rows.Find("InventoryItemCode")[1];
         // Description                                                          // Needed
         // Quantity                                                             // Needed
@@ -270,7 +282,7 @@ namespace Spellbound_Invoice_Converter
             sw.WriteLine("ContactName,EmailAddress,POAddressLine1,POAddressLine2,POAddressLine3,POAddressLine4,POCity,PORegion,POPostalCode,POCountry,InvoiceNumber,Reference,InvoiceDate,DueDate,InventoryItemCode,Description,Quantity,UnitAmount,Discount,AccountCode,TaxType,TrackingName1,TrackingOption1,TrackingName2,TrackingOption2,Currency,BrandingTheme");
 
             // Print each 
-            foreach(Client c in clients)
+            foreach (Client c in clients)
             {
                 sw.Write(Name + ',');
                 sw.Write(EmailAddress + ',');

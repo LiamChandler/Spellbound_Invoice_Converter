@@ -1,0 +1,34 @@
+Code,Name,EmailAddress,POAddressLine1,POAddressLine2,POAddressLine3,POAddressLine4,POCity,PORegion,POPostalCode,POCountry,Discount
+NULL1,ANZ Nature Tours,reservations@anznaturetours.com,,,,,,Queensland,4215,Austraila,1
+NULL2,Anzcro International,accounts@anzcro.com.au,,,,,Christchurch,,8013,New Zealand,2
+NULL3,Beyond the Blue,accounts@beyondtheblue.co.nz,PO Box 32084,Devonport,,,Auckland,,1149,New Zealand,3
+NULL4,First Light Travel,accounts@firstlighttravel.com,PO Box 106796,,,,Auckland City,,,New Zealand,4
+NULL5,G Adventures,ausnzops@gadventures.com,,,,,,,,New Zealand,5
+NULL6,Guest NZ,michael@guestnewzealand.co.nz,PO Box 3449,Richmond,,,,,,New Zealand,6
+HAMILTONISITEVISITORINFORMATIONCENTRE,Hamilton City Council I-site,info@visithamilton.co.nz,"149 Alexander Street,",Private Bag 3010,,,Hamilton,,,New Zealand,7
+NULL7,Headfirst Travel NZ,headfirstaccounts@gmail.com,PO Box 434,,,,Dunedin,,9371,New Zealand,8
+NULL8,IDNZ Bespoke Journeys,AHoniball@idnewzealand.com,,,,,,,,New Zealand,9
+NULL9,JCM Destinations,accounts@jcmdestination.co.nz,,,,,,,,New Zealand,10
+NULL10,Juno Hall,,R.D. 5,,,,Waitomo,,3943,New Zealand,11
+NULL11,Lion International Travel Service Co Limited,akl-nz@liontravel.com,Suite 501,350 Queen Street,Auckland Central,,Auckland,,,New Zealand,12
+NULL12,Milestone Tours (Boss Tours),info@milestonetours.co.nz,231B Titirangi Road,,,,Titirangi,,,New Zealand,13
+NULL13,Navi Outdoor Tours NZ,info@navi.co.nz,PO Box 69058,,,,Glendene,,,New Zealand,14
+NULL14,New Zealand Trails,accounts@newzealandtrails.com,32 Arthurs Point Road RD1,,,,,,,New Zealand,15
+NULL15,NZIIU,yasuko@nziiu.co.nz,PO Box 9929,Newmarket,,,Auckland,,,New Zealand,16
+NULL16,Otorohanga I-site,otovin@xtra.co.nz,PO Box 152,,,,Otorohanga,,,New Zealand,17
+NULL17,PanPacific Travel,,,,,,,,,New Zealand,18
+NULL18,Rotorua I-site,accounts.tourism@rdc.govt.nz,Rotorua Ecomonic Development Ltd,T/a Rotorua Visitor Centre and I-site,1167 Fenton Street,Private Bag 3007,Rotorua,,,New Zealand,19
+NULL19,South Taranaki Isite Visitor Centre,visitorinfo@stdc.govt.nz,,,,,,,,New Zealand,20
+NULL20,Southern World,imclean@southernworld.com,5 Princes Street,,,,,,,New Zealand,21
+TAUPOISITE,Taupo I-site,taupovc@greatlaketaupo.com,PO Box 149,,,,Taupo,,,New Zealand,22
+NULL21,Te Kuiti I-site,accountspayable@waitomo.govt.nz,PO Box 404,,,,Te Kuiti,,,New Zealand,23
+NULL22,The Green Spot,tricia@greenspot.co.nz,PO Box 497,,,,Taupo,,,New Zealand,24
+NULL23,Thermal Shuttle,info@thermalshuttle.co.nz,,,,,,,,New Zealand,25
+NULL24,Turangi I-site,creditors@taupo.govt.nz,C/- Taupo District Council,Private Bag 2005,,,Rotorua,,3046,New Zealand,26
+NULL25,Unparalled Journeys,accounts@upj.co.nz,46 Kilmore Street,Christchurch Central,,,,,,New Zealand,27
+NULL26,Waitomo Caves Guest Lodge,waitomocavesguestlodge@xtra.co.nz,7 Waitomo Village Road,,,,Waitomo,,,New Zealand,28
+WAITOMOISITE,Waitomo I Site,accounts@waitomodiscovery.org,PO Box 12,Waitomo Caves,,,Waitomo,,,New Zealand,29
+WAITOMOTOP10,Waitomo Top 10,admin@waitomopark.co.nz,PO Box 32,Waitomo Caves,,,Waitomo,,,New Zealand,30
+NULL27,Wellington I-site,gunde.knudsen@wellingtonNZ.com,PO Box 11007,Manners Street,,,,,,New Zealand,31
+NULL28,Woodlyn Park,woodlynpark@gmail.com,1177 Waitomo Valley Road,RD 7,,,Waitomo,,3943,New Zealand,32
+MATAMATAISITEVISITORINFORMATIONCENTRE,Matamata i-SITE Visitor Information Centre,,,,,,,,,New Zealand,33

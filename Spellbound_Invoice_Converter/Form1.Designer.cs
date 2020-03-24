@@ -31,9 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SpellboundInvoiceConverter));
             this.buttonSelect = new System.Windows.Forms.Button();
             this.labelSelectedCSV = new System.Windows.Forms.Label();
-            this.buttonConvert = new System.Windows.Forms.Button();
-            this.labelCustomerData = new System.Windows.Forms.Label();
-            this.buttonBusinessData = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonSelect
@@ -54,43 +51,11 @@
             this.labelSelectedCSV.Size = new System.Drawing.Size(0, 13);
             this.labelSelectedCSV.TabIndex = 1;
             // 
-            // buttonConvert
-            // 
-            this.buttonConvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonConvert.Location = new System.Drawing.Point(12, 70);
-            this.buttonConvert.Name = "buttonConvert";
-            this.buttonConvert.Size = new System.Drawing.Size(120, 23);
-            this.buttonConvert.TabIndex = 2;
-            this.buttonConvert.Text = "Convert Data";
-            this.buttonConvert.UseVisualStyleBackColor = true;
-            this.buttonConvert.Click += new System.EventHandler(this.buttonConvert_Click);
-            // 
-            // labelCustomerData
-            // 
-            this.labelCustomerData.AutoSize = true;
-            this.labelCustomerData.Location = new System.Drawing.Point(138, 46);
-            this.labelCustomerData.Name = "labelCustomerData";
-            this.labelCustomerData.Size = new System.Drawing.Size(0, 13);
-            this.labelCustomerData.TabIndex = 4;
-            // 
-            // buttonBusinessData
-            // 
-            this.buttonBusinessData.Location = new System.Drawing.Point(12, 41);
-            this.buttonBusinessData.Name = "buttonBusinessData";
-            this.buttonBusinessData.Size = new System.Drawing.Size(120, 23);
-            this.buttonBusinessData.TabIndex = 3;
-            this.buttonBusinessData.Text = "Business Data";
-            this.buttonBusinessData.UseVisualStyleBackColor = true;
-            this.buttonBusinessData.Click += new System.EventHandler(this.buttonBusinessData_Click);
-            // 
             // SpellboundInvoiceConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(708, 105);
-            this.Controls.Add(this.labelCustomerData);
-            this.Controls.Add(this.buttonBusinessData);
-            this.Controls.Add(this.buttonConvert);
             this.Controls.Add(this.labelSelectedCSV);
             this.Controls.Add(this.buttonSelect);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -105,9 +70,6 @@
 
         private System.Windows.Forms.Button buttonSelect;
         private System.Windows.Forms.Label labelSelectedCSV;
-        private System.Windows.Forms.Button buttonConvert;
-        private System.Windows.Forms.Label labelCustomerData;
-        private System.Windows.Forms.Button buttonBusinessData;
     }
 }
 
