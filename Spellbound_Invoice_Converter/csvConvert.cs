@@ -14,12 +14,21 @@ namespace Spellbound_Invoice_Converter
     class csvConvert
     {
         public List<string> erroredLines;
+        List<DataRow> incompleteRows = new List<DataRow>();
+
         public void ConvertCSV(string dataFile, string customerData)
         {
             // Parse CSV's to tables
             erroredLines = new List<string>();
             DataTable dataTable = ParseClientDataToTable(dataFile);
             DataTable companyInfoTable = ParseCompanyDataToTable(customerData);
+
+            // Testing stuff
+
+            foreach(DataRow thing in incompleteRows)
+            {
+                thing[dataTable.Columns.IndexOf("Agent reference")] = "1234";
+            }
 
             // Parse data from table
             bool added;
@@ -116,12 +125,17 @@ namespace Spellbound_Invoice_Converter
                     try
                     {
                         string[] rows = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
-                        // Add row if agent exists
+
+                        // Check if row is long enough, if not find rest of line.
                         if (rows.Length < dt.Columns.Count)
                         {
-                            erroredLines.Add(line);
+                            while (Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))").Length < dt.Columns.Count)
+                                line = string.Concat(line, " ", sr.ReadLine());
+                            rows = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
                         }
-                        else if (((string)rows[dt.Columns.IndexOf("Agent")]).CompareTo("") != 0)
+                        
+                        // Add row if agent exists
+                        if (((string)rows[dt.Columns.IndexOf("Agent")]).CompareTo("") != 0)
                         {
                             DataRow dr = dt.NewRow();
                             for (int i = 0; i < headers.Length; i++)
@@ -129,11 +143,17 @@ namespace Spellbound_Invoice_Converter
                                 dr[i] = rows[i];
                             }
                             dt.Rows.Add(dr);
+
+                            if(((string)dr[dt.Columns.IndexOf("Agent reference")]).CompareTo("") == 0)
+                            {
+                                incompleteRows.Add(dr);
+                            }
                         }
                     }
-                    catch
+                    catch(Exception e)
                     {
                         erroredLines.Add(line);
+                        Debug.WriteLine(e.StackTrace);
                     }
                 }
             }
