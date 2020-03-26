@@ -51,7 +51,6 @@ namespace Spellbound_Invoice_Converter
                 if (file.ShowDialog() == DialogResult.OK)
                 {
                     dataFileLocation = file.FileName;
-                    labelSelectedCSV.Text = dataFileLocation;
                 }
 
                 if (dataFileLocation != null)
@@ -154,6 +153,11 @@ namespace Spellbound_Invoice_Converter
             sw.Flush();
             sw.Close();
             Debug.WriteLine("Config Saved");
+        }
+
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

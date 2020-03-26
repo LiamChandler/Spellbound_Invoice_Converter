@@ -14,20 +14,19 @@ namespace Spellbound_Invoice_Converter
     class csvConvert
     {
         public List<string> erroredLines;
-        List<DataRow> incompleteRows = new List<DataRow>();
+        public static DataTable dataTable;
 
         public void ConvertCSV(string dataFile, string customerData)
         {
             // Parse CSV's to tables
             erroredLines = new List<string>();
-            DataTable dataTable = ParseClientDataToTable(dataFile);
+            dataTable = ParseClientDataToTable(dataFile);
             DataTable companyInfoTable = ParseCompanyDataToTable(customerData);
 
-            // Testing stuff
-
-            foreach(DataRow thing in incompleteRows)
+            if (csvConvert.dataTable.Select("[Agent reference]=''").Length > 0)
             {
-                thing[dataTable.Columns.IndexOf("Agent reference")] = "1234";
+                IncompleteDataEditor edit = new IncompleteDataEditor();
+                edit.ShowDialog();
             }
 
             // Parse data from table
@@ -41,8 +40,9 @@ namespace Spellbound_Invoice_Converter
                 currentClient = new Client();
 
                 // Parse Data
-                String[] tmp = ((string)row[dataTable.Columns.IndexOf("Date - ISO")]).Substring(0, 10).Split('-');
-                currentClient.date = new DateTime((int)Int32.Parse(tmp[0]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[2]));
+                String[] tmp = ((string)row[dataTable.Columns.IndexOf("Date")]).Replace("\"","").Split(',')[0].Split('/');
+                tmp[2] = "20" + tmp[2];
+                currentClient.date = new DateTime((int)Int32.Parse(tmp[2]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[0]));
 
                 currentClient.orderNumber = (string)row[dataTable.Columns.IndexOf("Order number")];
                 currentClient.agent = (string)row[dataTable.Columns.IndexOf("Agent code")];
@@ -101,6 +101,7 @@ namespace Spellbound_Invoice_Converter
                     Verb = "open"
                 });
             }
+
         }
 
         protected DataTable ParseClientDataToTable(string strFilePath)
@@ -143,11 +144,6 @@ namespace Spellbound_Invoice_Converter
                                 dr[i] = rows[i];
                             }
                             dt.Rows.Add(dr);
-
-                            if(((string)dr[dt.Columns.IndexOf("Agent reference")]).CompareTo("") == 0)
-                            {
-                                incompleteRows.Add(dr);
-                            }
                         }
                     }
                     catch(Exception e)

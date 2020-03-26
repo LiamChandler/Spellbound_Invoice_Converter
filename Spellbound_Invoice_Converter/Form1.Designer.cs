@@ -30,46 +30,49 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SpellboundInvoiceConverter));
             this.buttonSelect = new System.Windows.Forms.Button();
-            this.labelSelectedCSV = new System.Windows.Forms.Label();
+            this.buttonExit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonSelect
             // 
+            this.buttonSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonSelect.Location = new System.Drawing.Point(12, 12);
             this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(120, 23);
+            this.buttonSelect.Size = new System.Drawing.Size(200, 50);
             this.buttonSelect.TabIndex = 0;
-            this.buttonSelect.Text = "Select CSV";
+            this.buttonSelect.Text = "Select File To Convert";
             this.buttonSelect.UseVisualStyleBackColor = true;
             this.buttonSelect.Click += new System.EventHandler(this.buttonSelect_Click);
             // 
-            // labelSelectedCSV
+            // buttonExit
             // 
-            this.labelSelectedCSV.AutoSize = true;
-            this.labelSelectedCSV.Location = new System.Drawing.Point(138, 17);
-            this.labelSelectedCSV.Name = "labelSelectedCSV";
-            this.labelSelectedCSV.Size = new System.Drawing.Size(0, 13);
-            this.labelSelectedCSV.TabIndex = 1;
+            this.buttonExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonExit.Location = new System.Drawing.Point(12, 68);
+            this.buttonExit.Name = "buttonExit";
+            this.buttonExit.Size = new System.Drawing.Size(200, 50);
+            this.buttonExit.TabIndex = 2;
+            this.buttonExit.Text = "Exit";
+            this.buttonExit.UseVisualStyleBackColor = true;
+            this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
             // 
             // SpellboundInvoiceConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(708, 105);
-            this.Controls.Add(this.labelSelectedCSV);
+            this.ClientSize = new System.Drawing.Size(402, 136);
+            this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonSelect);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SpellboundInvoiceConverter";
             this.Text = "Spellbound Invoice Converter";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button buttonSelect;
-        private System.Windows.Forms.Label labelSelectedCSV;
+        private System.Windows.Forms.Button buttonExit;
     }
 }
 
