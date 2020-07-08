@@ -82,7 +82,7 @@ namespace Spellbound_Invoice_Converter
 
                     foreach (string h in headers)
                     {
-                        dt.Columns.Add(h);
+                        dt.Columns.Add(h.Trim('"'));
                     }
 
                     // Add information from CSV to table

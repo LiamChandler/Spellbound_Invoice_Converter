@@ -40,7 +40,7 @@
             this.buttonSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonSelect.Location = new System.Drawing.Point(12, 13);
             this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(260, 65);
+            this.buttonSelect.Size = new System.Drawing.Size(310, 65);
             this.buttonSelect.TabIndex = 0;
             this.buttonSelect.Text = "Select File To Convert";
             this.buttonSelect.UseVisualStyleBackColor = true;
@@ -53,7 +53,7 @@
             this.buttonExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonExit.Location = new System.Drawing.Point(12, 84);
             this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(260, 65);
+            this.buttonExit.Size = new System.Drawing.Size(310, 65);
             this.buttonExit.TabIndex = 2;
             this.buttonExit.Text = "Exit";
             this.buttonExit.UseVisualStyleBackColor = true;
@@ -63,7 +63,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 161);
+            this.ClientSize = new System.Drawing.Size(334, 161);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonSelect);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
