@@ -12,7 +12,7 @@ namespace Spellbound_Invoice_Converter
 {
     public partial class IncompleteDataEditor : Form
     {
-        DataRow[] rows = csvConvert.dataTable.Select("[Agent reference]=''");
+        DataRow[] rows = csvConvert.dataTable.Select("[Agent reference]=''"); // or [Paid to agent]=''
         int lastIndex = -1;
         int index = -1;
 
@@ -51,6 +51,7 @@ namespace Spellbound_Invoice_Converter
             {
                 // Save Data
                 rows[lastIndex][csvConvert.dataTable.Columns.IndexOf("Agent reference")] = textBoxAgentRefernce.Text;
+                rows[lastIndex][csvConvert.dataTable.Columns.IndexOf("Paid to agent")] = textBoxPaidToAgent.Text;
             }
 
             // Update Title
@@ -65,6 +66,12 @@ namespace Spellbound_Invoice_Converter
             textBoxOrderNumber.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Order number")];
             textBoxAgent.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Agent")];
             textBoxCustomerNumber.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Customer name")];
+
+            textBoxPaidToAgent.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Paid to agent")];
+            textBoxCash.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Cash")];
+            textBoxVoucher.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Voucher")];
+            textBoxInvoice.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Invoice")];
+
             textBoxAgentRefernce.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Agent reference")];
             textBoxInternalNotes.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Internal notes")];
 
@@ -75,5 +82,6 @@ namespace Spellbound_Invoice_Converter
         {
             this.Close();
         }
+
     }
 }
