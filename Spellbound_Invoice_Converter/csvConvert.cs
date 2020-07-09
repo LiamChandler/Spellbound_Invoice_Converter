@@ -41,7 +41,7 @@ namespace Spellbound_Invoice_Converter
 				currentClient = new Client();
 
 				// Parse Data
-				string[] tmp = ((string)row[dataTable.Columns.IndexOf("Date")]).Replace("\"","").Split(',')[0].Split('/');
+				string[] tmp = ((string)row[dataTable.Columns.IndexOf("Date")]).Replace("\"", "").Split(',')[0].Split('/');
 				tmp[2] = "20" + tmp[2];
 				currentClient.date = new DateTime((int)Int32.Parse(tmp[2]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[0]));
 
@@ -106,7 +106,8 @@ namespace Spellbound_Invoice_Converter
 		protected DataTable ParseClientDataToTable(string strFilePath)
 		{
 			DataTable dt = new DataTable();
-			StreamReader sr = new StreamReader(strFilePath);     // Add try catch
+
+			StreamReader sr = new StreamReader(new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
 			// Add header line to table
 			string header = sr.ReadLine();
@@ -159,6 +160,7 @@ namespace Spellbound_Invoice_Converter
 			if (erroredLines.Count > 1)
 				printErrored(strFilePath);
 
+
 			return dt;
 		}
 
@@ -203,6 +205,13 @@ namespace Spellbound_Invoice_Converter
 			// Create path if doesn't exist
 			if (!Directory.Exists(editedPath))
 				Directory.CreateDirectory(editedPath);
+			else
+			 {
+				// Remove all files from dir
+				DirectoryInfo dir = new DirectoryInfo(editedPath);
+				foreach (System.IO.FileInfo file in dir.GetFiles()) file.Delete();
+				foreach (System.IO.DirectoryInfo subDirectory in dir.GetDirectories()) subDirectory.Delete(true);
+			}
 
 			StreamWriter sw = new StreamWriter(@editedPath + "TableOutput.csv");
 			foreach (DataRow row in table.Rows)
@@ -221,27 +230,34 @@ namespace Spellbound_Invoice_Converter
 
 		protected void printAgents(List<Agent> agents, string path)
 		{
+			string editedPath = path.Substring(0, path.LastIndexOf(".")) + "Output\\";
+
+			// Create path if doesn't exist
+			if (!Directory.Exists(editedPath))
+				Directory.CreateDirectory(editedPath);
+			else
+			{
+				// Remove all files from dir
+				DirectoryInfo dir = new DirectoryInfo(editedPath);
+				foreach (System.IO.FileInfo file in dir.GetFiles()) file.Delete();
+				foreach (System.IO.DirectoryInfo subDirectory in dir.GetDirectories()) subDirectory.Delete(true);
+			}
+
 			foreach (Agent a in agents)
 			{
-				string editedPath = path.Substring(0, path.LastIndexOf(".")) + "Output\\";
-
 				try
 				{
-					// Create path if doesn't exist
-					if (!Directory.Exists(editedPath))
-						Directory.CreateDirectory(editedPath);
+					string tmp =  editedPath + a.InvoiceNumber + '-' + a.Name.Replace("\"", "") + ".csv";
 
-					editedPath += a.Name.Replace("\"", "") + ".csv";
-
-					StreamWriter sw = new StreamWriter(@editedPath);
+					StreamWriter sw = new StreamWriter(@tmp);
 					a.saveClients(sw);
 					sw.Flush();
 					sw.Close();
 				}
 				catch
-                {
+				{
 					MessageBox.Show("Unable to save file:\n" + editedPath + "\nIs the file being used");
-                }
+				}
 			}
 		}
 
@@ -277,9 +293,9 @@ namespace Spellbound_Invoice_Converter
 		public string PORegion = "";
 		public string POPostalCode = "";
 		public string POCountry = "";
-		public string InvoiceNumber = "INV-" + SpellboundInvoiceConverter.getInvoiceNumber().ToString().PadLeft(4,'0');      // Needed
+		public string InvoiceNumber = "INV-" + SpellboundInvoiceConverter.getInvoiceNumber().ToString().PadLeft(4, '0');      // Needed
 		public string Reference = "";
-		public DateTime InvoiceDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1);				// Needed
+		public DateTime InvoiceDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1);               // Needed
 		public DateTime DueDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 20);
 		public string InventoryItemCode = (string)SpellboundInvoiceConverter.config.Rows.Find("InventoryItemCode")[1];
 		// Description                                                          // Needed

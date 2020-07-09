@@ -12,7 +12,7 @@ namespace Spellbound_Invoice_Converter
 {
     public partial class IncompleteDataEditor : Form
     {
-        DataRow[] rows = csvConvert.dataTable.Select("[Agent reference]=''"); // or [Paid to agent]=''
+        DataRow[] rows = csvConvert.dataTable.Select("[Paid to agent] like '' OR [Agent reference] like ''");
         int lastIndex = -1;
         int index = -1;
 
