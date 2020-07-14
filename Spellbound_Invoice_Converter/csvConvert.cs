@@ -13,17 +13,18 @@ namespace Spellbound_Invoice_Converter
 {
 	class csvConvert
 	{
-		public List<string> erroredLines;
-		public static DataTable dataTable;
+		public List<string> erroredLines;	// List to store inparseable lines
+		public static DataTable dataTable;	// List to hold customer data
 
 		public void ConvertCSV(string dataFile, string customerData)
 		{
 			// Parse CSV's to tables
 			erroredLines = new List<string>();
 			dataTable = ParseClientDataToTable(dataFile);
-			DataTable companyInfoTable = ParseCompanyDataToTable(customerData);
-			string search = "[Agent reference]=''";
+			DataTable companyInfoTable = ParseBusinessDataToTable(customerData);
 
+			// Create and show data editor to allow user to update any incomplete client data
+			string search = "[Agent reference]=''";
 			if (csvConvert.dataTable.Select(search).Length > 0)
 			{
 				IncompleteDataEditor edit = new IncompleteDataEditor();
@@ -44,15 +45,16 @@ namespace Spellbound_Invoice_Converter
 				string[] tmp = ((string)row[dataTable.Columns.IndexOf("Date")]).Replace("\"", "").Split(',')[0].Split('/');
 				tmp[2] = "20" + tmp[2];
 				currentClient.date = new DateTime((int)Int32.Parse(tmp[2]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[0]));
-
 				currentClient.orderNumber = (string)row[dataTable.Columns.IndexOf("Order number")];
 				currentClient.agent = (string)row[dataTable.Columns.IndexOf("Agent code")];
 				currentClient.name = (string)row[dataTable.Columns.IndexOf("Customer name")];
-				currentClient.paidToAgent = (string)row[dataTable.Columns.IndexOf("Paid to agent")];   // Can crash if empty
+				currentClient.paidToAgent = (string)row[dataTable.Columns.IndexOf("Paid to agent")];
 				currentClient.agentRefernce = (string)row[dataTable.Columns.IndexOf("Agent reference")];
 
-				if (agents.Count != 0)
+				// Add client to an agent
+				if (agents.Count != 0) // If agent list not empty
 				{
+					// Try to find clients agent
 					foreach (Agent a in agents)
 					{
 						if (currentClient.agent.CompareTo(a.Name) == 0)
@@ -63,6 +65,7 @@ namespace Spellbound_Invoice_Converter
 						}
 					}
 				}
+				// If agent could not be found, create agent and add client
 				if (!added)
 				{
 					Agent newAgent = new Agent(currentClient.agent);
@@ -90,9 +93,9 @@ namespace Spellbound_Invoice_Converter
 			printAgents(agents, dataFile);
 			DialogResult dr = MessageBox.Show("Sucessfully converted " + dataTable.Rows.Count + " clients into " + agents.Count + " businesses.\nWould you like to be taken to the output location?", "Output", MessageBoxButtons.YesNo);
 
-			Debug.WriteLine(dataFile.Substring(0, dataFile.LastIndexOf(".")) + "Output\\");
 			if (dr == DialogResult.Yes)
 			{
+				// Open explorer window at output folder
 				System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
 				{
 					FileName = (dataFile.Substring(0, dataFile.LastIndexOf(".")) + "Output\\"),
@@ -127,7 +130,7 @@ namespace Spellbound_Invoice_Converter
 				{
 					string[] rows = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
 
-					// Check if row is long enough, if not find rest of line.
+					// Check if row is complete, if not find rest of line.
 					if (rows.Length < dt.Columns.Count)
 					{
 						while (Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))").Length < dt.Columns.Count)
@@ -135,7 +138,7 @@ namespace Spellbound_Invoice_Converter
 						rows = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
 					}
 
-					// Add row if agent exists
+					// Add row if agent column has an entry
 					if (((string)rows[dt.Columns.IndexOf("Agent")]).CompareTo("") != 0)
 					{
 						DataRow dr = dt.NewRow();
@@ -164,7 +167,8 @@ namespace Spellbound_Invoice_Converter
 			return dt;
 		}
 
-		protected DataTable ParseCompanyDataToTable(string strFilePath)
+		// Returns contents of BusinessData.csv at a DataTable
+		protected DataTable ParseBusinessDataToTable(string strFilePath)
 		{
 			DataTable dt = new DataTable();
 			using (StreamReader sr = new StreamReader(strFilePath))
@@ -174,7 +178,7 @@ namespace Spellbound_Invoice_Converter
 
 				foreach (string h in headers)
 				{
-					dt.Columns.Add(h);
+					dt.Columns.Add(h.Trim('"'));
 				}
 
 				// Add information from CSV to table
@@ -186,7 +190,7 @@ namespace Spellbound_Invoice_Converter
 					DataRow dr = dt.NewRow();
 					for (int i = 0; i < headers.Length; i++)
 					{
-						dr[i] = rows[i];
+						dr[i] = rows[i].Trim('"');
 					}
 					dt.Rows.Add(dr);
 				}
@@ -198,36 +202,7 @@ namespace Spellbound_Invoice_Converter
 			return dt;
 		}
 
-		protected void printTable(DataTable table, string path)
-		{
-			string editedPath = path.Substring(0, path.LastIndexOf(".")) + "Output\\";
-
-			// Create path if doesn't exist
-			if (!Directory.Exists(editedPath))
-				Directory.CreateDirectory(editedPath);
-			else
-			 {
-				// Remove all files from dir
-				DirectoryInfo dir = new DirectoryInfo(editedPath);
-				foreach (System.IO.FileInfo file in dir.GetFiles()) file.Delete();
-				foreach (System.IO.DirectoryInfo subDirectory in dir.GetDirectories()) subDirectory.Delete(true);
-			}
-
-			StreamWriter sw = new StreamWriter(@editedPath + "TableOutput.csv");
-			foreach (DataRow row in table.Rows)
-			{
-				for (int i = 0; i < row.ItemArray.Length; i++)
-				{
-					if (i != 0)
-						sw.Write(",");
-					sw.Write((string)row.ItemArray[i]);
-				}
-				sw.WriteLine("");
-			}
-			sw.Flush();
-			sw.Close();
-		}
-
+		// Output the given list as csv files to the given location
 		protected void printAgents(List<Agent> agents, string path)
 		{
 			string editedPath = path.Substring(0, path.LastIndexOf(".")) + "Output\\";
@@ -256,11 +231,12 @@ namespace Spellbound_Invoice_Converter
 				}
 				catch
 				{
-					MessageBox.Show("Unable to save file:\n" + editedPath + "\nIs the file being used");
+					MessageBox.Show("Unable to save file:\n" + editedPath + "\nIs the file being used?");
 				}
 			}
 		}
 
+		// Print any un parseable lines to a file
 		protected void printErrored(string path)
 		{
 			string editedPath = path.Substring(0, path.LastIndexOf(".")) + "Output\\";
@@ -279,6 +255,7 @@ namespace Spellbound_Invoice_Converter
 		}
 	}
 
+	// Contains all information about a particular agent
 	class Agent
 	{
 		public List<Client> clients = new List<Client>();
@@ -316,13 +293,14 @@ namespace Spellbound_Invoice_Converter
 			this.Name = Name;
 		}
 
+		// Prints all client informatin out to the given StreamWriter
 		public void saveClients(StreamWriter sw)
 		{
 			// Print Header
 			sw.WriteLine("ContactName,EmailAddress,POAddressLine1,POAddressLine2,POAddressLine3,POAddressLine4,POCity,PORegion,POPostalCode,POCountry,InvoiceNumber,Reference,InvoiceDate,DueDate,InventoryItemCode,Description,Quantity,UnitAmount,Discount,AccountCode,TaxType,TrackingName1,TrackingOption1,TrackingName2,TrackingOption2,Currency,BrandingTheme");
 
 			// Print each 
-			foreach (Client c in clients)
+			foreach (Client curr in clients)
 			{
 				sw.Write(Name + ',');
 				sw.Write(EmailAddress + ',');
@@ -339,9 +317,9 @@ namespace Spellbound_Invoice_Converter
 				sw.Write(InvoiceDate.ToShortDateString() + ','); ;
 				sw.Write(DueDate.ToShortDateString() + ',');
 				sw.Write(InventoryItemCode + ',');
-				sw.Write(c.agentRefernce + " " + c.date.ToString("MMM d") + " " + c.name + ',');
-				sw.Write("1" + ',');    // Quantity
-				sw.Write(c.paidToAgent + ',');
+				sw.Write(curr.agentRefernce + " " + curr.date.ToString("MMM d") + " " + curr.name + ','); // Description
+				sw.Write("1" + ',');			// Quantity
+				sw.Write(curr.paidToAgent + ',');
 				sw.Write(Discount.ToString() + ',');
 				sw.Write(AccountCode + ',');
 				sw.Write(TaxType + ',');
