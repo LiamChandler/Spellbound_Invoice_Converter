@@ -159,10 +159,8 @@ namespace Spellbound_Invoice_Converter
 			Debug.WriteLine(dt.Rows.Count + " lines sucessfully parsed");
 
 			// Debug file outputs
-			//printTable(dt, strFilePath);
 			if (erroredLines.Count > 1)
 				printErrored(strFilePath);
-
 
 			return dt;
 		}
@@ -222,7 +220,7 @@ namespace Spellbound_Invoice_Converter
 			{
 				try
 				{
-					string tmp =  editedPath + a.InvoiceNumber + '-' + a.Name.Replace("\"", "") + ".csv";
+					string tmp =  editedPath + a.InvoiceNumber + '-' + a.Name + ".csv";
 
 					StreamWriter sw = new StreamWriter(@tmp);
 					a.saveClients(sw);
@@ -291,6 +289,11 @@ namespace Spellbound_Invoice_Converter
 		public Agent(string Name)
 		{
 			this.Name = Name;
+
+            if (this.Name.Equals(""))
+            {
+				this.Name = "EMPTYAGENTCOLUMN";
+            }
 		}
 
 		// Prints all client informatin out to the given StreamWriter
