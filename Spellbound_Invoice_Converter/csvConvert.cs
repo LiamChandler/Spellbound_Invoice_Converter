@@ -72,6 +72,7 @@ namespace Spellbound_Invoice_Converter
 					DataRow agentData = companyInfoTable.Rows.Find(newAgent.Name);
 					if (agentData != null)
 					{
+						newAgent.ClientName = (string)agentData[companyInfoTable.Columns.IndexOf("Name")];
 						newAgent.EmailAddress = (string)agentData[companyInfoTable.Columns.IndexOf("EmailAddress")];
 						newAgent.POAddressLine1 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine1")];
 						newAgent.POAddressLine2 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine2")];
@@ -210,10 +211,17 @@ namespace Spellbound_Invoice_Converter
 				Directory.CreateDirectory(editedPath);
 			else
 			{
-				// Remove all files from dir
-				DirectoryInfo dir = new DirectoryInfo(editedPath);
-				foreach (System.IO.FileInfo file in dir.GetFiles()) file.Delete();
-				foreach (System.IO.DirectoryInfo subDirectory in dir.GetDirectories()) subDirectory.Delete(true);
+				try
+				{
+					// Remove all files from dir
+					DirectoryInfo dir = new DirectoryInfo(editedPath);
+					foreach (FileInfo file in dir.GetFiles()) file.Delete();
+					foreach (DirectoryInfo subDirectory in dir.GetDirectories()) subDirectory.Delete(true);
+				}
+				catch
+                {
+
+                }
 			}
 
 			foreach (Agent a in agents)
@@ -258,7 +266,8 @@ namespace Spellbound_Invoice_Converter
 	{
 		public List<Client> clients = new List<Client>();
 
-		public string Name;                                                     // Needed
+		public string Name;                                                     // Used to match data between Rezdy and Xero
+		public string ClientName = "";											// Printed as readable name in exported files
 		public string EmailAddress = "";
 		public string POAddressLine1 = "";
 		public string POAddressLine2 = "";
@@ -305,7 +314,7 @@ namespace Spellbound_Invoice_Converter
 			// Print each 
 			foreach (Client curr in clients)
 			{
-				sw.Write(Name + ',');
+				sw.Write(ClientName + ',');
 				sw.Write(EmailAddress + ',');
 				sw.Write(POAddressLine1 + ',');
 				sw.Write(POAddressLine2 + ',');

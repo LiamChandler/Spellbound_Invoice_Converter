@@ -45,10 +45,6 @@
             this.textBoxInternalNotes = new System.Windows.Forms.TextBox();
             this.labelNumber = new System.Windows.Forms.Label();
             this.textBoxDate = new System.Windows.Forms.TextBox();
-            this.textBoxInvoice = new System.Windows.Forms.TextBox();
-            this.textBoxOther = new System.Windows.Forms.TextBox();
-            this.textBoxVoucher = new System.Windows.Forms.TextBox();
-            this.textBoxCash = new System.Windows.Forms.TextBox();
             this.textBoxPaidToAgent = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -213,53 +209,13 @@
             this.textBoxDate.Size = new System.Drawing.Size(324, 20);
             this.textBoxDate.TabIndex = 17;
             // 
-            // textBoxInvoice
-            // 
-            this.textBoxInvoice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxInvoice.Location = new System.Drawing.Point(354, 173);
-            this.textBoxInvoice.Name = "textBoxInvoice";
-            this.textBoxInvoice.ReadOnly = true;
-            this.textBoxInvoice.Size = new System.Drawing.Size(60, 20);
-            this.textBoxInvoice.TabIndex = 16;
-            // 
-            // textBoxOther
-            // 
-            this.textBoxOther.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxOther.Location = new System.Drawing.Point(288, 173);
-            this.textBoxOther.Name = "textBoxOther";
-            this.textBoxOther.ReadOnly = true;
-            this.textBoxOther.Size = new System.Drawing.Size(60, 20);
-            this.textBoxOther.TabIndex = 15;
-            // 
-            // textBoxVoucher
-            // 
-            this.textBoxVoucher.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxVoucher.Location = new System.Drawing.Point(222, 173);
-            this.textBoxVoucher.Name = "textBoxVoucher";
-            this.textBoxVoucher.ReadOnly = true;
-            this.textBoxVoucher.Size = new System.Drawing.Size(60, 20);
-            this.textBoxVoucher.TabIndex = 14;
-            // 
-            // textBoxCash
-            // 
-            this.textBoxCash.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxCash.Location = new System.Drawing.Point(156, 173);
-            this.textBoxCash.Name = "textBoxCash";
-            this.textBoxCash.ReadOnly = true;
-            this.textBoxCash.Size = new System.Drawing.Size(60, 20);
-            this.textBoxCash.TabIndex = 13;
-            // 
             // textBoxPaidToAgent
             // 
             this.textBoxPaidToAgent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPaidToAgent.Location = new System.Drawing.Point(90, 173);
             this.textBoxPaidToAgent.Name = "textBoxPaidToAgent";
-            this.textBoxPaidToAgent.Size = new System.Drawing.Size(60, 20);
+            this.textBoxPaidToAgent.Size = new System.Drawing.Size(324, 20);
             this.textBoxPaidToAgent.TabIndex = 1;
             // 
             // label1
@@ -278,10 +234,6 @@
             this.ClientSize = new System.Drawing.Size(426, 303);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxPaidToAgent);
-            this.Controls.Add(this.textBoxCash);
-            this.Controls.Add(this.textBoxVoucher);
-            this.Controls.Add(this.textBoxOther);
-            this.Controls.Add(this.textBoxInvoice);
             this.Controls.Add(this.textBoxDate);
             this.Controls.Add(this.labelNumber);
             this.Controls.Add(this.textBoxInternalNotes);
@@ -326,10 +278,6 @@
         private System.Windows.Forms.TextBox textBoxInternalNotes;
         private System.Windows.Forms.Label labelNumber;
         private System.Windows.Forms.TextBox textBoxDate;
-        private System.Windows.Forms.TextBox textBoxInvoice;
-        private System.Windows.Forms.TextBox textBoxOther;
-        private System.Windows.Forms.TextBox textBoxVoucher;
-        private System.Windows.Forms.TextBox textBoxCash;
         private System.Windows.Forms.TextBox textBoxPaidToAgent;
         private System.Windows.Forms.Label label1;
     }

@@ -65,23 +65,27 @@ namespace Spellbound_Invoice_Converter
 
 			// Update Details
 
-			String[] tmp = ((string)rows[index][csvConvert.dataTable.Columns.IndexOf("Date")]).Replace("\"", "").Split(',')[0].Split('/');
-			tmp[2] = "20" + tmp[2];
-			textBoxDate.Text = new DateTime((int)Int32.Parse(tmp[2]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[0])).ToLongDateString();
+			try
+			{
+				String[] tmp = ((string)rows[index][csvConvert.dataTable.Columns.IndexOf("Date")]).Replace("\"", "").Split(',')[0].Split('/');
+				tmp[2] = "20" + tmp[2];
+				textBoxDate.Text = new DateTime((int)Int32.Parse(tmp[2]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[0])).ToLongDateString();
 
-			textBoxOrderNumber.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Order number")];
-			textBoxAgent.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Agent")];
-			textBoxCustomerNumber.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Customer name")];
+				textBoxOrderNumber.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Order number")];
+				textBoxAgent.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Agent")];
+				textBoxCustomerNumber.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Customer name")];
 
-			textBoxPaidToAgent.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Paid to agent")];
-			textBoxCash.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Cash")];
-			textBoxVoucher.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Voucher")];
-			textBoxInvoice.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Invoice")];
+				textBoxPaidToAgent.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Paid to agent")];
 
-			textBoxAgentRefernce.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Agent reference")];
-			textBoxInternalNotes.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Internal notes")];
+				textBoxAgentRefernce.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Agent reference")];
+				textBoxInternalNotes.Text = (string)rows[index][csvConvert.dataTable.Columns.IndexOf("Internal notes")];
 
-			textBoxAgentRefernce.Focus();
+				textBoxAgentRefernce.Focus();
+			}
+			catch
+            {
+				MessageBox.Show("Something went wrong reading the data.");
+            }
 		}
 
 		private void buttonFinish_Click(object sender, EventArgs e)
