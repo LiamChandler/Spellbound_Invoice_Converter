@@ -85,16 +85,16 @@
             // labelDate
             // 
             this.labelDate.AutoSize = true;
-            this.labelDate.Location = new System.Drawing.Point(54, 49);
+            this.labelDate.Location = new System.Drawing.Point(19, 49);
             this.labelDate.Name = "labelDate";
-            this.labelDate.Size = new System.Drawing.Size(30, 13);
+            this.labelDate.Size = new System.Drawing.Size(70, 13);
             this.labelDate.TabIndex = 5;
-            this.labelDate.Text = "Date";
+            this.labelDate.Text = "Booked Date";
             // 
             // labelOrderNumber
             // 
             this.labelOrderNumber.AutoSize = true;
-            this.labelOrderNumber.Location = new System.Drawing.Point(11, 72);
+            this.labelOrderNumber.Location = new System.Drawing.Point(16, 72);
             this.labelOrderNumber.Name = "labelOrderNumber";
             this.labelOrderNumber.Size = new System.Drawing.Size(73, 13);
             this.labelOrderNumber.TabIndex = 6;
@@ -103,7 +103,7 @@
             // labelAgent
             // 
             this.labelAgent.AutoSize = true;
-            this.labelAgent.Location = new System.Drawing.Point(49, 98);
+            this.labelAgent.Location = new System.Drawing.Point(54, 98);
             this.labelAgent.Name = "labelAgent";
             this.labelAgent.Size = new System.Drawing.Size(35, 13);
             this.labelAgent.TabIndex = 7;
@@ -112,7 +112,7 @@
             // labelName
             // 
             this.labelName.AutoSize = true;
-            this.labelName.Location = new System.Drawing.Point(2, 124);
+            this.labelName.Location = new System.Drawing.Point(7, 124);
             this.labelName.Name = "labelName";
             this.labelName.Size = new System.Drawing.Size(82, 13);
             this.labelName.TabIndex = 8;
@@ -123,14 +123,14 @@
             this.labelAgentRefernce.AutoSize = true;
             this.labelAgentRefernce.Location = new System.Drawing.Point(2, 150);
             this.labelAgentRefernce.Name = "labelAgentRefernce";
-            this.labelAgentRefernce.Size = new System.Drawing.Size(82, 13);
+            this.labelAgentRefernce.Size = new System.Drawing.Size(87, 13);
             this.labelAgentRefernce.TabIndex = 9;
-            this.labelAgentRefernce.Text = "Agent Refernce";
+            this.labelAgentRefernce.Text = "Voucher Number";
             // 
             // labelInternalNotes
             // 
             this.labelInternalNotes.AutoSize = true;
-            this.labelInternalNotes.Location = new System.Drawing.Point(11, 202);
+            this.labelInternalNotes.Location = new System.Drawing.Point(16, 202);
             this.labelInternalNotes.Name = "labelInternalNotes";
             this.labelInternalNotes.Size = new System.Drawing.Size(73, 13);
             this.labelInternalNotes.TabIndex = 11;
@@ -221,7 +221,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 176);
+            this.label1.Location = new System.Drawing.Point(15, 176);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 13);
             this.label1.TabIndex = 10;

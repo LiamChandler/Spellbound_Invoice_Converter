@@ -31,12 +31,6 @@ namespace Spellbound_Invoice_Converter
 			config = importConfig();
 
 			businessDataLocation = Directory.GetCurrentDirectory() + "\\BusinessData.csv";
-
-			if (config != null)
-			{
-				// Get current invoice number from config
-				invoiceNumber = Int32.Parse((string)config.Rows.Find("CurrentInvoiceNumber")[1]);
-			}
 		}
 
 		// Select and process file
@@ -46,6 +40,22 @@ namespace Spellbound_Invoice_Converter
 				MessageBox.Show("Please make sure that there is 'config.csv' file in the directory");
 			else
 			{
+				if (textBoxInvoiceNumber.Text == "")
+				{
+					MessageBox.Show("Please input an invoice number.");
+					return;
+				}
+
+				try
+				{
+					invoiceNumber = int.Parse(textBoxInvoiceNumber.Text);
+				}
+				catch
+				{
+					MessageBox.Show("Please input a valid invoice number.");
+					return;
+				}
+
 				OpenFileDialog file = new OpenFileDialog();
 				file.Filter = "CSV Files (*.csv)|*.csv";
 				if (file.ShowDialog() == DialogResult.OK)
@@ -59,8 +69,6 @@ namespace Spellbound_Invoice_Converter
 					csvConverter.ConvertCSV(dataFileLocation, businessDataLocation);
 					exportConfig();
 				}
-				else
-					MessageBox.Show("Please select a .csv file to convert.");
 			}
 		}
 
@@ -119,7 +127,6 @@ namespace Spellbound_Invoice_Converter
 				StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\configExample.csv");
 
 				sw.WriteLine("Setting,Value,Discription");
-				sw.WriteLine("CurrentInvoiceNumber,1,Get from Xero to align with previous invoices");
 				sw.WriteLine("InventoryItemCode,,normally 'Tour'");
 				sw.WriteLine("AccountCode,,Normally '271'");
 				sw.WriteLine("TaxType,,Normally '15% GST on Income'");
@@ -131,14 +138,11 @@ namespace Spellbound_Invoice_Converter
 				Debug.WriteLine(e.StackTrace);
 			}
 			return null;
-
 		}
 
 		// Update the config file to match the programs current state
 		private void exportConfig()
 		{
-			config.Rows.Find("CurrentInvoiceNumber")[1] = invoiceNumber.ToString();
-
 			StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\config.csv");
 
 			sw.WriteLine("Setting,Value,Discription");

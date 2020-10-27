@@ -14,18 +14,28 @@ namespace Spellbound_Invoice_Converter
 	class csvConvert
 	{
 		public List<string> erroredLines;	// List to store inparseable lines
-		public static DataTable dataTable;	// List to hold customer data
+		public static DataTable invoiceDataTable;	// List to hold customer data
 
-		public void ConvertCSV(string dataFile, string customerData)
+		public void ConvertCSV(string invoiceData, string businessData)
 		{
 			// Parse CSV's to tables
 			erroredLines = new List<string>();
-			dataTable = ParseClientDataToTable(dataFile);
-			DataTable companyInfoTable = ParseBusinessDataToTable(customerData);
+			invoiceDataTable = ParseClientDataToTable(invoiceData);
+			DataTable businessInfoTable;
+
+			try
+			{
+				businessInfoTable = ParseBusinessDataToTable(businessData);
+			}
+			catch
+            {
+				MessageBox.Show("There is no 'businessData.csv' file in program directory.\nUnable to process data");
+				return;
+            }
 
 			// Create and show data editor to allow user to update any incomplete client data
-			string search = "[Agent reference]=''";
-			if (csvConvert.dataTable.Select(search).Length > 0)
+			string search = "[Agent comments]=''";
+			if (csvConvert.invoiceDataTable.Select(search).Length > 0)
 			{
 				IncompleteDataEditor edit = new IncompleteDataEditor();
 				edit.ShowDialog();
@@ -36,20 +46,20 @@ namespace Spellbound_Invoice_Converter
 			Client currentClient;
 			List<Agent> agents = new List<Agent>();
 
-			foreach (DataRow row in dataTable.Rows)
+			foreach (DataRow row in invoiceDataTable.Rows)
 			{
 				added = false;
 				currentClient = new Client();
 
 				// Parse Data
-				string[] tmp = ((string)row[dataTable.Columns.IndexOf("Date")]).Replace("\"", "").Split(',')[0].Split('/');
+				string[] tmp = ((string)row[invoiceDataTable.Columns.IndexOf("Booked Date")]).Replace("\"", "").Split(',')[0].Split('/');
 				tmp[2] = "20" + tmp[2];
 				currentClient.date = new DateTime((int)Int32.Parse(tmp[2]), (int)Int32.Parse(tmp[1]), (int)Int32.Parse(tmp[0]));
-				currentClient.orderNumber = (string)row[dataTable.Columns.IndexOf("Order number")];
-				currentClient.agent = (string)row[dataTable.Columns.IndexOf("Agent code")];
-				currentClient.name = (string)row[dataTable.Columns.IndexOf("Customer name")];
-				currentClient.paidToAgent = (string)row[dataTable.Columns.IndexOf("Paid to agent")];
-				currentClient.agentRefernce = (string)row[dataTable.Columns.IndexOf("Agent reference")];
+				currentClient.orderNumber = (string)row[invoiceDataTable.Columns.IndexOf("Order number")];
+				currentClient.agent = (string)row[invoiceDataTable.Columns.IndexOf("Agent code")];
+				currentClient.name = (string)row[invoiceDataTable.Columns.IndexOf("Customer name")];
+				currentClient.paidToAgent = (string)row[invoiceDataTable.Columns.IndexOf("Paid to agent")];
+				currentClient.agentRefernce = (string)row[invoiceDataTable.Columns.IndexOf("Agent comments")];
 
 				// Add client to an agent
 				if (agents.Count != 0) // If agent list not empty
@@ -65,24 +75,26 @@ namespace Spellbound_Invoice_Converter
 						}
 					}
 				}
-				// If agent could not be found, create agent and add client
+
+				// If agent could not be found, create agent and add the current client
 				if (!added)
 				{
 					Agent newAgent = new Agent(currentClient.agent);
-					DataRow agentData = companyInfoTable.Rows.Find(newAgent.Name);
+					DataRow agentData = businessInfoTable.Rows.Find(newAgent.Name);
+
 					if (agentData != null)
 					{
-						newAgent.ClientName = (string)agentData[companyInfoTable.Columns.IndexOf("Name")];
-						newAgent.EmailAddress = (string)agentData[companyInfoTable.Columns.IndexOf("EmailAddress")];
-						newAgent.POAddressLine1 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine1")];
-						newAgent.POAddressLine2 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine2")];
-						newAgent.POAddressLine3 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine3")];
-						newAgent.POAddressLine4 = (string)agentData[companyInfoTable.Columns.IndexOf("POAddressLine4")];
-						newAgent.POCity = (string)agentData[companyInfoTable.Columns.IndexOf("POCity")];
-						newAgent.PORegion = (string)agentData[companyInfoTable.Columns.IndexOf("PORegion")];
-						newAgent.POPostalCode = (string)agentData[companyInfoTable.Columns.IndexOf("POPostalCode")];
-						newAgent.POCountry = (string)agentData[companyInfoTable.Columns.IndexOf("POCountry")];
-						newAgent.Discount = float.Parse((string)agentData[companyInfoTable.Columns.IndexOf("Discount")]);
+						newAgent.ClientName = (string)agentData[businessInfoTable.Columns.IndexOf("Name")];
+						newAgent.EmailAddress = (string)agentData[businessInfoTable.Columns.IndexOf("EmailAddress")];
+						newAgent.POAddressLine1 = (string)agentData[businessInfoTable.Columns.IndexOf("POAddressLine1")];
+						newAgent.POAddressLine2 = (string)agentData[businessInfoTable.Columns.IndexOf("POAddressLine2")];
+						newAgent.POAddressLine3 = (string)agentData[businessInfoTable.Columns.IndexOf("POAddressLine3")];
+						newAgent.POAddressLine4 = (string)agentData[businessInfoTable.Columns.IndexOf("POAddressLine4")];
+						newAgent.POCity = (string)agentData[businessInfoTable.Columns.IndexOf("POCity")];
+						newAgent.PORegion = (string)agentData[businessInfoTable.Columns.IndexOf("PORegion")];
+						newAgent.POPostalCode = (string)agentData[businessInfoTable.Columns.IndexOf("POPostalCode")];
+						newAgent.POCountry = (string)agentData[businessInfoTable.Columns.IndexOf("POCountry")];
+						newAgent.Discount = float.Parse((string)agentData[businessInfoTable.Columns.IndexOf("Discount")]);
 					}
 
 					newAgent.clients.Add(currentClient);
@@ -91,15 +103,15 @@ namespace Spellbound_Invoice_Converter
 			}
 
 			Debug.WriteLine("Saving data to files");
-			printAgents(agents, dataFile);
-			DialogResult dr = MessageBox.Show("Sucessfully converted " + dataTable.Rows.Count + " clients into " + agents.Count + " businesses.\nWould you like to be taken to the output location?", "Output", MessageBoxButtons.YesNo);
+			printAgents(agents, invoiceData);
+			DialogResult dr = MessageBox.Show("Sucessfully converted " + invoiceDataTable.Rows.Count + " clients into " + agents.Count + " businesses.\nWould you like to be taken to the output location?", "Output", MessageBoxButtons.YesNo);
 
 			if (dr == DialogResult.Yes)
 			{
 				// Open explorer window at output folder
 				System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
 				{
-					FileName = (dataFile.Substring(0, dataFile.LastIndexOf(".")) + "Output\\"),
+					FileName = (invoiceData.Substring(0, invoiceData.LastIndexOf(".")) + "Output\\"),
 					UseShellExecute = true,
 					Verb = "open"
 				});
