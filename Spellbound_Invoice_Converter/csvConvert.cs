@@ -27,9 +27,9 @@ namespace Spellbound_Invoice_Converter
 			{
 				businessInfoTable = ParseBusinessDataToTable(businessData);
 			}
-			catch
+			catch(Exception ex)
             {
-				MessageBox.Show("There is no 'businessData.csv' file in program directory.\nUnable to process data");
+				MessageBox.Show("'BusinessData.csv' error.\nReason: " + ex.Message);
 				return;
             }
 
